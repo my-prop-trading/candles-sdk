@@ -1,5 +1,4 @@
-use std::collections::HashSet;
-
+use ahash::AHashSet;
 use chrono::{DateTime, Datelike, Utc};
 use chrono::{Duration, TimeZone};
 use num_enum::{IntoPrimitive, TryFromPrimitive};
@@ -102,8 +101,8 @@ impl CandleInterval {
         &self,
         datetime_from: DateTime<Utc>,
         datetime_to: DateTime<Utc>,
-    ) -> HashSet<DateTime<Utc>> {
-        let mut dates = HashSet::new();
+    ) -> AHashSet<DateTime<Utc>> {
+        let mut dates = AHashSet::new();
         let date_from = self.get_start_date(datetime_from);
         dates.insert(date_from);
         let date_to = self.get_start_date(datetime_to);
@@ -202,8 +201,8 @@ impl CandleInterval {
 #[cfg(test)]
 mod tests {
     use crate::shared::candle_interval::CandleInterval;
+    use ahash::AHashSet;
     use chrono::{DateTime, Datelike, Duration, TimeZone, Timelike, Utc};
-    use std::collections::HashSet;
 
     #[test]
     fn count_minute() {
@@ -338,7 +337,7 @@ mod tests {
         let candle_type = CandleInterval::Minute;
 
         let dates = candle_type.get_start_dates(from, to);
-        let dates: HashSet<DateTime<Utc>> = dates.into_iter().collect();
+        let dates: AHashSet<DateTime<Utc>> = dates.into_iter().collect();
 
         assert!(dates.contains(&candle_type.get_start_date(from)));
         assert!(dates.contains(&candle_type.get_start_date(to)));
@@ -358,7 +357,7 @@ mod tests {
         let candle_type = CandleInterval::Hour;
 
         let dates = candle_type.get_start_dates(from, to);
-        let dates: HashSet<DateTime<Utc>> = dates.into_iter().collect();
+        let dates: AHashSet<DateTime<Utc>> = dates.into_iter().collect();
 
         assert!(dates.contains(&candle_type.get_start_date(from)));
         assert!(dates.contains(&candle_type.get_start_date(to)));
@@ -378,7 +377,7 @@ mod tests {
         let candle_type = CandleInterval::Day;
 
         let dates = candle_type.get_start_dates(from, to);
-        let dates: HashSet<DateTime<Utc>> = dates.into_iter().collect();
+        let dates: AHashSet<DateTime<Utc>> = dates.into_iter().collect();
 
         assert!(dates.contains(&candle_type.get_start_date(from)));
         assert!(dates.contains(&candle_type.get_start_date(to)));
@@ -398,7 +397,7 @@ mod tests {
         let candle_type = CandleInterval::Month;
 
         let dates = candle_type.get_start_dates(from, to);
-        let dates: HashSet<DateTime<Utc>> = dates.into_iter().collect();
+        let dates: AHashSet<DateTime<Utc>> = dates.into_iter().collect();
 
         assert!(dates.contains(&candle_type.get_start_date(from)));
         assert!(dates.contains(&candle_type.get_start_date(to)));
