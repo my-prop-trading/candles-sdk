@@ -4,13 +4,13 @@ use ahash::AHashMap;
 use chrono::{DateTime, Utc};
 use crate::shared::utils::calculate_candle_dates;
 
-pub struct CandlesCache {
+pub struct BidAskCandlesCache {
     candles_by_ids: AHashMap<String, BidAskCandle>,
     pub intervals: Vec<CandleInterval>,
     pub last_update_date: Option<DateTime<Utc>>,
 }
 
-impl CandlesCache {
+impl BidAskCandlesCache {
     pub fn new(candle_intervals: Vec<CandleInterval>) -> Self {
         let mut candle_intervals = candle_intervals;
         candle_intervals.dedup();
