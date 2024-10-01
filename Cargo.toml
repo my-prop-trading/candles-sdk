@@ -1,0 +1,20 @@
+[package]
+name = "candles-sdk"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = []
+console-log = []
+
+[dependencies]
+serde_repr = "*"
+num_enum = "*"
+serde = "*"
+chrono = "*"
+serde_derive = "*"
+serde_with = { version = "*", features = ["chrono"] }
+serde_json = "*"
+ahash = "*"
