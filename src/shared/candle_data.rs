@@ -1,7 +1,7 @@
 use crate::shared::candle_interval::CandleInterval;
 use chrono::{DateTime, Utc};
 use serde_derive::{Deserialize, Serialize};
-use serde_with::serde_as;
+use serde_with::{serde_as, TimestampSecondsWithFrac};
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
