@@ -4,9 +4,9 @@ use std::fmt::Display;
 
 #[derive(Debug, Clone, Eq, Hash, PartialEq)]
 pub struct CandleIndex {
-    ref_id: String,
-    candle_interval: CandleInterval,
-    candle_start_date: DateTime<Utc>,
+    pub ref_id: String,
+    pub candle_interval: CandleInterval,
+    pub candle_start_date: DateTime<Utc>,
 }
 
 impl CandleIndex {
