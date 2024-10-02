@@ -57,7 +57,7 @@ impl AccountCandlesCache {
                 candle.update(&data);
             } else {
                 self.candles_by_indexes
-                    .insert(index, AccountCandle::new(&data));
+                    .insert(index.clone(), AccountCandle::new(index, &data));
             }
         }
 
@@ -128,5 +128,58 @@ impl AccountCandlesCache {
 
     pub fn get(&self, index: &CandleIndex) -> Option<&AccountCandle> {
         self.candles_by_indexes.get(index)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use chrono::TimeZone;
+    #[test]
+    pub fn insert_or_replace_1() {
+        let date: DateTime<Utc> = Utc.with_ymd_and_hms(2000, 12, 12, 3, 23, 34).unwrap();
+        let intervals = vec![CandleInterval::Minute];
+        let data = AccountData {
+            equity: 1000.0,
+            balance: 1000.0,
+            pnl: 0.0,
+        };
+        let id = "1";
+        let index = CandleIndex::new(id, intervals[0], date);
+        let candle = AccountCandle::new(index.clone(), &data);
+        let mut cache = AccountCandlesCache::new(intervals);
+
+        cache.insert_or_replace(candle);
+
+        assert_eq!(cache.len(), 1);
+        assert!(!cache.is_empty());
+    }
+
+    #[test]
+    pub fn update_or_create_1() {
+        let date: DateTime<Utc> = Utc.with_ymd_and_hms(2000, 12, 12, 3, 23, 34).unwrap();
+        let intervals = vec![CandleInterval::Minute];
+        let data_1 = AccountData {
+            equity: 1000.0,
+            balance: 1000.0,
+            pnl: 0.0,
+        };
+        let data_2 = AccountData {
+            equity: 1010.0,
+            balance: 1000.0,
+            pnl: 10.0,
+        };
+        let id = "1";
+        let index = CandleIndex::new(id, intervals[0], date);
+        let candle = AccountCandle::new(index.clone(), &data_1);
+        let mut cache = AccountCandlesCache::new(intervals);
+
+        cache.insert_or_replace(candle);
+        cache.update_or_create(date, id, data_2.clone());
+        let cache_candle = cache.get(&index).unwrap();
+        
+        assert_eq!(cache.len(), 1);
+        assert!(!cache.is_empty());        
+        assert_eq!(cache_candle.equity_data.close, data_2.equity);
     }
 }

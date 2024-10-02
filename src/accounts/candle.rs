@@ -27,11 +27,11 @@ impl From<&AccountCandle> for CandleIndex {
 }
 
 impl AccountCandle {
-    pub fn new(data: &AccountData) -> Self {
+    pub fn new(index: CandleIndex, data: &AccountData) -> Self {
         Self {
-            interval: CandleInterval::Minute,
-            date: Default::default(),
-            ref_id: Default::default(),
+            interval: index.candle_interval,
+            date: index.candle_start_date,
+            ref_id: index.ref_id.clone(),
             balance_data: CandleData::new(data.balance),
             equity_data: CandleData::new(data.equity),
             pnl_data: CandleData::new(data.pnl),
