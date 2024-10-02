@@ -44,7 +44,7 @@ impl AccountCandlesCache {
         self.candles_by_indexes.insert((&candle).into(), candle)
     }
 
-    pub fn insert_or_update(&mut self, date: DateTime<Utc>, ref_id: &str, data: AccountData) {
+    pub fn update_or_create(&mut self, date: DateTime<Utc>, ref_id: &str, data: AccountData) {
         for interval in self.intervals.iter() {
             let index = CandleIndex::new(ref_id, interval.to_owned(), date);
             let candle = self.candles_by_indexes.get_mut(&index);
