@@ -53,3 +53,25 @@ impl CandleData {
         candle_type.get_start_date(self.timestamp)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::shared::candle_data::CandleData;
+
+    #[test]
+    pub fn update_low_after_high_1() {
+        let mut data = CandleData {
+            open: 0.0,
+            close: 0.0,
+            high: 9500.0,
+            low: 0.0,
+            low_after_high: 9000.0,
+            timestamp: Default::default(),
+        };
+        let value = 11000.0;
+        
+        data.update(value);
+        
+        assert_eq!(data.low_after_high, value);
+    }
+}
