@@ -2,15 +2,16 @@ use crate::shared::candle_data::CandleData;
 use crate::shared::candle_index::CandleIndex;
 use crate::shared::candle_interval::CandleInterval;
 use chrono::{DateTime, Utc};
+use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct AccountData {
     pub equity: f64,
     pub balance: f64,
     pub pnl: f64,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct AccountCandle {
     pub interval: CandleInterval,
     pub date: DateTime<Utc>,
