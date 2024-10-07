@@ -35,7 +35,7 @@ pub enum CandleInterval {
     TwelveHours = 12,
     ThreeDays = 13,
     SevenDays = 14,
-    Infinity = 15,
+    Endless = 15,
 }
 
 impl CandleInterval {
@@ -93,7 +93,7 @@ impl CandleInterval {
             CandleInterval::SevenDays => Utc
                 .timestamp_millis_opt((timestamp_sec - timestamp_sec % 1036800) * 1000)
                 .unwrap(),
-            CandleInterval::Infinity => Utc.timestamp_millis_opt(0).unwrap(),
+            CandleInterval::Endless => Utc.timestamp_millis_opt(0).unwrap(),
         }
     }
 
@@ -191,7 +191,7 @@ impl CandleInterval {
             CandleInterval::TwelveHours => Duration::hours(12),
             CandleInterval::ThreeDays => Duration::days(3),
             CandleInterval::SevenDays => Duration::days(7),
-            CandleInterval::Infinity => Duration::max_value(),
+            CandleInterval::Endless => Duration::max_value(),
         };
 
         duration
