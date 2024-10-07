@@ -177,9 +177,9 @@ mod test {
         cache.insert_or_replace(candle);
         cache.update_or_create(date, id, data_2.clone());
         let cache_candle = cache.get(&index).unwrap();
-        
+
         assert_eq!(cache.len(), 1);
-        assert!(!cache.is_empty());        
+        assert!(!cache.is_empty());
         assert_eq!(cache_candle.equity_data.close, data_2.equity);
     }
 }

@@ -1,8 +1,8 @@
 use crate::prices::candle::{BidAskCandle, BidAskCandleData};
 use crate::shared::candle_interval::CandleInterval;
+use crate::shared::utils::calculate_candle_dates;
 use ahash::AHashMap;
 use chrono::{DateTime, Utc};
-use crate::shared::utils::calculate_candle_dates;
 
 pub struct BidAskCandlesCache {
     candles_by_ids: AHashMap<String, BidAskCandle>,
@@ -164,4 +164,3 @@ impl BidAskCandlesCache {
         self.candles_by_ids.get(id)
     }
 }
-

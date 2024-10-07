@@ -4,7 +4,7 @@ use serde_derive::{Deserialize, Serialize};
 use serde_with::{serde_as, TimestampSecondsWithFrac};
 
 #[serde_as]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Serialize, Deserialize)]
 pub struct CandleData {
     pub open: f64,
     pub close: f64,
@@ -69,9 +69,9 @@ mod tests {
             timestamp: Default::default(),
         };
         let value = 11000.0;
-        
+
         data.update(value);
-        
+
         assert_eq!(data.low_after_high, value);
     }
 }
