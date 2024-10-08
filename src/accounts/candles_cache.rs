@@ -70,7 +70,33 @@ impl AccountCandlesCache {
             return None;
         }
 
-        let candle_dates = calculate_candle_dates(&self.intervals, date);
+        let candle_dates = calculate_candle_dates(&self.intervals, date, None);
+
+        let candles = self
+            .candles_by_indexes
+            .iter()
+            .filter_map(|(_id, candle)| {
+                let current_date = candle_dates
+                    .get(&candle.interval)
+                    .expect("wrong calculate_candle_dates");
+
+                if candle.date >= *current_date {
+                    Some(candle)
+                } else {
+                    None
+                }
+            })
+            .collect();
+
+        Some(candles)
+    }
+
+    pub fn get_range(&self, start_date: DateTime<Utc>, end_date: DateTime<Utc>) -> Option<Vec<&AccountCandle>> {
+        if self.candles_by_indexes.len() == 0 {
+            return None;
+        }
+
+        let candle_dates = calculate_candle_dates(&self.intervals, start_date, Some(end_date));
 
         let candles = self
             .candles_by_indexes
@@ -107,7 +133,7 @@ impl AccountCandlesCache {
                 }
             });
         } else {
-            let dates = calculate_candle_dates(&self.intervals, date);
+            let dates = calculate_candle_dates(&self.intervals, date, None);
 
             self.candles_by_indexes.retain(|_id, candle| {
                 let current_date = dates

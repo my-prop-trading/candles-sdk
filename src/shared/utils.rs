@@ -4,12 +4,21 @@ use chrono::{DateTime, Utc};
 
 pub fn calculate_candle_dates(
     intervals: &[CandleInterval],
-    datetime: DateTime<Utc>,
+    start_date: DateTime<Utc>,
+    end_date: Option<DateTime<Utc>>,
 ) -> AHashMap<CandleInterval, DateTime<Utc>> {
     let mut dates = AHashMap::with_capacity(intervals.len());
 
     for interval in intervals.iter() {
-        dates.insert(interval.to_owned(), interval.get_start_date(datetime));
+        let interval_start_date = interval.get_start_date(start_date);
+
+        if let Some(end_date) = end_date {
+            while interval_start_date <= interval.get_end_date(end_date) {
+                dates.insert(interval.to_owned(), interval_start_date);
+            }
+        } else {
+            dates.insert(interval.to_owned(), interval_start_date);
+        }
     }
 
     dates
@@ -41,7 +50,7 @@ mod tests {
             CandleInterval::Month,
         ];
         let initial_date: DateTime<Utc> = Utc.with_ymd_and_hms(2000, 1, 1, 0, 0, 0).unwrap();
-        let dates = calculate_candle_dates(&intervals, initial_date);
+        let dates = calculate_candle_dates(&intervals, initial_date, None);
 
         assert_eq!(intervals.len(), dates.len());
 

@@ -100,7 +100,7 @@ impl BidAskCandlesCache {
             return None;
         }
 
-        let candle_dates = calculate_candle_dates(&self.intervals, datetime);
+        let candle_dates = calculate_candle_dates(&self.intervals, datetime, None);
 
         let candles = self
             .candles_by_ids
@@ -141,7 +141,7 @@ impl BidAskCandlesCache {
                 }
             });
         } else {
-            let dates = calculate_candle_dates(&self.intervals, datetime);
+            let dates = calculate_candle_dates(&self.intervals, datetime, None);
 
             self.candles_by_ids.retain(|_id, candle| {
                 let current_date = dates
