@@ -31,7 +31,7 @@ impl AccountCandle {
     pub fn new(index: CandleIndex, data: &AccountData) -> Self {
         Self {
             interval: index.candle_interval,
-            date: index.candle_start_date,
+            date: index.interval_start_date,
             ref_id: index.ref_id.clone(),
             balance_data: CandleData::new(data.balance),
             equity_data: CandleData::new(data.equity),

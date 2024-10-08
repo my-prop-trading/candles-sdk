@@ -6,7 +6,7 @@ use std::fmt::Display;
 pub struct CandleIndex {
     pub ref_id: String,
     pub candle_interval: CandleInterval,
-    pub candle_start_date: DateTime<Utc>,
+    pub interval_start_date: DateTime<Utc>,
 }
 
 impl CandleIndex {
@@ -15,12 +15,12 @@ impl CandleIndex {
         candle_interval: CandleInterval,
         date: DateTime<Utc>,
     ) -> Self {
-        let candle_start_date = candle_interval.get_start_date(date);
+        let interval_start_date = candle_interval.get_start_date(date);
 
         Self {
             ref_id: ref_id.into(),
             candle_interval,
-            candle_start_date,
+            interval_start_date,
         }
     }
 
@@ -29,8 +29,7 @@ impl CandleIndex {
             "{}{}{}",
             self.candle_interval as u32,
             self.ref_id,
-            self.candle_interval
-                .get_start_date(self.candle_start_date)
+            self.interval_start_date
                 .timestamp(),
         )
     }

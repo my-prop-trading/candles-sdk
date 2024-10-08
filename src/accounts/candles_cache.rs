@@ -91,30 +91,30 @@ impl AccountCandlesCache {
         Some(candles)
     }
 
-    pub fn get_range(&self, start_date: DateTime<Utc>, end_date: DateTime<Utc>) -> Option<Vec<&AccountCandle>> {
+    pub fn get_range(
+        &self,
+        ref_id: impl Into<String>,
+        interval: CandleInterval,
+        start_date: DateTime<Utc>,
+        end_date: DateTime<Utc>,
+    ) -> Vec<&AccountCandle> {
         if self.candles_by_indexes.len() == 0 {
-            return None;
+            return vec![];
         }
 
-        let candle_dates = calculate_candle_dates(&self.intervals, start_date, Some(end_date));
+        let mut candles = Vec::new();
+        let ref_id = ref_id.into();
 
-        let candles = self
-            .candles_by_indexes
-            .iter()
-            .filter_map(|(_id, candle)| {
-                let current_date = candle_dates
-                    .get(&candle.interval)
-                    .expect("wrong calculate_candle_dates");
+        loop {
+            let index = CandleIndex::new(ref_id.clone(), interval, start_date);
 
-                if candle.date >= *current_date {
-                    Some(candle)
-                } else {
-                    None
-                }
-            })
-            .collect();
+            if index.interval_start_date >= interval.get_end_date(end_date) {
+                return candles;
+            }
 
-        Some(candles)
+            let candle = self.candles_by_indexes.get(&index).expect("wrong index");
+            candles.push(candle);
+        }
     }
 
     /// Removes candles with date less or equals specified date
