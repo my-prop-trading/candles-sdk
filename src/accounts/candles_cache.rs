@@ -236,4 +236,54 @@ mod test {
         assert_eq!(cache.len(), 2);
         assert_eq!(range.len(), 2);
     }
+
+    #[test]
+    pub fn get_range_2() {
+        let date: DateTime<Utc> = Utc.with_ymd_and_hms(2000, 12, 12, 3, 23, 34).unwrap();
+        let intervals = vec![CandleInterval::Minute];
+        let data_1 = AccountData {
+            equity: 1000.0,
+            balance: 1000.0,
+            pnl: 0.0,
+        };
+        let id = "1";
+        let index = CandleIndex::new(id, intervals[0], date);
+        let candle = AccountCandle::new(index.clone(), &data_1);
+        let date_2: DateTime<Utc> = Utc.with_ymd_and_hms(2000, 12, 12, 3, 24, 34).unwrap();
+        let index_2 = CandleIndex::new(id, intervals[0], date_2);
+        let candle_2 = AccountCandle::new(index_2.clone(), &data_1);
+        let mut cache = AccountCandlesCache::new(intervals.clone());
+
+        cache.insert_or_replace(candle);
+        cache.insert_or_replace(candle_2);
+        let range = cache.get_range(id, intervals[0], date, date);
+
+        assert_eq!(cache.len(), 2);
+        assert_eq!(range.len(), 1);
+    }
+
+    #[test]
+    pub fn get_range_3() {
+        let date: DateTime<Utc> = Utc.with_ymd_and_hms(2000, 12, 12, 3, 23, 34).unwrap();
+        let intervals = vec![CandleInterval::Minute];
+        let data_1 = AccountData {
+            equity: 1000.0,
+            balance: 1000.0,
+            pnl: 0.0,
+        };
+        let id = "1";
+        let index = CandleIndex::new(id, intervals[0], date);
+        let candle = AccountCandle::new(index.clone(), &data_1);
+        let date_2: DateTime<Utc> = Utc.with_ymd_and_hms(2000, 12, 12, 3, 24, 34).unwrap();
+        let index_2 = CandleIndex::new(id, intervals[0], date_2);
+        let candle_2 = AccountCandle::new(index_2.clone(), &data_1);
+        let mut cache = AccountCandlesCache::new(intervals.clone());
+
+        cache.insert_or_replace(candle);
+        cache.insert_or_replace(candle_2);
+        let range = cache.get_range(id, intervals[0], date+Duration::days(1000), date+Duration::days(1000));
+
+        assert_eq!(cache.len(), 2);
+        assert_eq!(range.len(), 0);
+    }
 }
