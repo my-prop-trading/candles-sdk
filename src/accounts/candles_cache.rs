@@ -104,16 +104,19 @@ impl AccountCandlesCache {
 
         let mut candles = Vec::new();
         let ref_id = ref_id.into();
+        let mut cursor_date = start_date;
 
         loop {
-            let index = CandleIndex::new(ref_id.clone(), interval, start_date);
+            let index = CandleIndex::new(ref_id.clone(), interval, cursor_date);
+            cursor_date = index.interval_start_date + interval.get_duration(cursor_date);
 
-            if index.interval_start_date >= interval.get_end_date(end_date) {
-                return candles;
+            if let Some(candle) = self.candles_by_indexes.get(&index) {
+                candles.push(candle);
             }
 
-            let candle = self.candles_by_indexes.get(&index).expect("wrong index");
-            candles.push(candle);
+            if cursor_date >= interval.get_end_date(end_date) {
+                return candles;
+            }
         }
     }
 
@@ -160,7 +163,7 @@ impl AccountCandlesCache {
 #[cfg(test)]
 mod test {
     use super::*;
-    use chrono::TimeZone;
+    use chrono::{Duration, TimeZone};
     #[test]
     pub fn insert_or_replace_1() {
         let date: DateTime<Utc> = Utc.with_ymd_and_hms(2000, 12, 12, 3, 23, 34).unwrap();
@@ -207,5 +210,30 @@ mod test {
         assert_eq!(cache.len(), 1);
         assert!(!cache.is_empty());
         assert_eq!(cache_candle.equity_data.close, data_2.equity);
+    }
+
+    #[test]
+    pub fn get_range_1() {
+        let date: DateTime<Utc> = Utc.with_ymd_and_hms(2000, 12, 12, 3, 23, 34).unwrap();
+        let intervals = vec![CandleInterval::Minute];
+        let data_1 = AccountData {
+            equity: 1000.0,
+            balance: 1000.0,
+            pnl: 0.0,
+        };
+        let id = "1";
+        let index = CandleIndex::new(id, intervals[0], date);
+        let candle = AccountCandle::new(index.clone(), &data_1);
+        let date_2: DateTime<Utc> = Utc.with_ymd_and_hms(2000, 12, 12, 3, 24, 34).unwrap();
+        let index_2 = CandleIndex::new(id, intervals[0], date_2);
+        let candle_2 = AccountCandle::new(index_2.clone(), &data_1);
+        let mut cache = AccountCandlesCache::new(intervals.clone());
+
+        cache.insert_or_replace(candle);
+        cache.insert_or_replace(candle_2);
+        let range = cache.get_range(id, intervals[0], date, date_2 + Duration::hours(1));
+
+        assert_eq!(cache.len(), 2);
+        assert_eq!(range.len(), 2);
     }
 }
