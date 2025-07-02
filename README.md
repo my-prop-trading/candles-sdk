@@ -1,7 +1,7 @@
 # candles-sdk
 Rust library for collecting and managing candlestick (OHLC) timeseries data. Designed for financial and crypto trading environments.
 
-Supported intervals:
+Supported intervals (via enum CandleInterval):
 | Variant          | Duration    | Description                       |
 | ---------------- | ----------- | --------------------------------- |
 | `Minute = 0`         | 1m          | One-minute candles                |
