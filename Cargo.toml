@@ -16,5 +16,4 @@ serde = "*"
 chrono = "*"
 serde_derive = "*"
 serde_with = { version = "*", features = ["chrono"] }
-serde_json = "*"
 ahash = "*"

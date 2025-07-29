@@ -191,7 +191,7 @@ impl CandleInterval {
             CandleInterval::TwelveHours => Duration::hours(12),
             CandleInterval::ThreeDays => Duration::days(3),
             CandleInterval::SevenDays => Duration::days(7),
-            CandleInterval::Endless => Duration::max_value(),
+            CandleInterval::Endless => Duration::MAX,
         };
 
         duration
